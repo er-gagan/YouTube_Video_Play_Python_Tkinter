@@ -1,26 +1,97 @@
-from youtube_search import YoutubeSearch
-import vlc,pafy,time
+from tkinter import *
+from YouTube import *
+from bs4 import BeautifulSoup as soup
+import urllib.parse
+from PIL import Image, ImageTk
+import io
+import os
 
-results = YoutubeSearch('Guru Randhawa: High Rated Gabru Official Song', max_results=1).to_dict()
+root = Tk()
+root.geometry('1000x580')
 
-Vid_ID = results[0]['id']
-Vid_Link = "https://www.youtube.com/watch?v="+Vid_ID
-Vid_Title = results[0]['title'][0:50:]+'...'
-Vid_Thumbnails = results[0]['thumbnails'][0]
-Vid_Channel = results[0]['channel']
-Vid_Duration = results[0]['duration']
-Vid_Views = results[0]['views']
-print(Vid_Link)
-print(Vid_Title)
-print(Vid_Thumbnails)
-print(Vid_Channel)
-print(Vid_Duration)
-print(Vid_Views)
+photo = PhotoImage(file="./logo.png")
+root.iconphoto(False,photo)
 
-Vid_Duration_In_Second = sum(int(x) * 60 ** i for i, x in enumerate(reversed(Vid_Duration.split(':'))))
+root.title("YouTube Play Music")
 
-video = pafy.new(Vid_Link)
-best = video.getbestaudio()
-md = vlc.MediaPlayer(best.url)
-md.play()
-time.sleep(Vid_Duration_In_Second)
+image1 = PhotoImage(file="./banner.png")
+label_for_image = Label(root,image=image1)
+label_for_image.place(x=170, y=-1)
+
+SearchVar = StringVar()
+os.system("cls")
+
+def Search():
+    def PlayAudio(argument):
+        vidlink = argument[0]
+        duration = argument[1]
+        Audio(vidlink,duration)
+    
+    def PlayVideo(argument):
+        vidlink = argument[0]
+        duration = argument[1]
+        Video(vidlink,duration)
+    
+    search=SearchVar.get()
+    SearchData = list(SearchKeywords(search))
+
+    Title = SearchData[2]
+    ThumbURL = SearchData[3]
+    Channel = SearchData[4]
+    Duration = SearchData[5]
+    Views = SearchData[6]
+
+    raw_data1 = urllib.request.urlopen(ThumbURL[0]).read()
+    im1 = Image.open(io.BytesIO(raw_data1))
+    im1 = im1.resize((170,100))
+    thumimage1 = ImageTk.PhotoImage(im1)
+    label1 = Label(root, image=thumimage1)
+    label1.place(x=30,y=200)
+    Title1 = f'''{Title[0][0:75:]}\n{Title[0][75::]}'''
+    Label(root,text=Title1,font=("ArialBlack",14),justify=LEFT).place(x=210,y=200)
+    Label(root,text=Channel[0][0:25:]+" | ",font=("ArialBold",12)).place(x=210,y=250)
+    Label(root,text=Views[0],font=("ArialBold",12)).place(x=400,y=250)
+    Label(root,text="Video Length: "+Duration[0],font=("ArialBold",12)).place(x=210,y=275)
+    argument1 = list((SearchData[1][0],Duration[0]))
+    Button(root,text="Play Audio",font=("ArialBlack",15),bd=5,command=lambda: PlayAudio(argument1)).place(x=620,y=240)
+    Button(root,text="Play Video",font=("ArialBlack",15),bd=5,command=lambda: PlayVideo(argument1)).place(x=780,y=240)
+    
+    raw_data2 = urllib.request.urlopen(ThumbURL[1]).read()
+    im2 = Image.open(io.BytesIO(raw_data2))
+    im2 = im2.resize((170,100))
+    thumimage2 = ImageTk.PhotoImage(im2)
+    label2 = Label(root, image=thumimage2)
+    label2.place(x=30,y=320)
+    Title2 = f'''{Title[1][0:75:]}\n{Title[1][75::]}'''
+    Label(root,text=Title2,font=("ArialBlack",14),justify=LEFT).place(x=210,y=320)
+    Label(root,text=Channel[1][0:25:]+" | ",font=("ArialBold",12)).place(x=210,y=370)
+    Label(root,text=Views[1],font=("ArialBold",12)).place(x=400,y=370)
+    Label(root,text="Video Length: "+Duration[1],font=("ArialBold",12)).place(x=210,y=395)
+    argument2 = list((SearchData[1][1],Duration[1]))
+    Button(root,text="Play Audio",font=("ArialBlack",15),bd=5,command=lambda: PlayAudio(argument2)).place(x=620,y=360)
+    Button(root,text="Play Video",font=("ArialBlack",15),bd=5,command=lambda: PlayVideo(argument2)).place(x=780,y=360)
+    
+    raw_data3 = urllib.request.urlopen(ThumbURL[2]).read()
+    im3 = Image.open(io.BytesIO(raw_data3))
+    im3 = im3.resize((170,100))
+    thumimage3 = ImageTk.PhotoImage(im3)
+    label3 = Label(root, image=thumimage3)
+    label3.place(x=30,y=440)
+    Title3 = f'''{Title[2][0:75:]}\n{Title[2][75::]}'''
+    Label(root,text=Title3,font=("ArialBlack",14),justify=LEFT).place(x=210,y=440)
+    Label(root,text=Channel[2][0:25:]+" | ",font=("ArialBold",12)).place(x=210,y=490)
+    Label(root,text=Views[2],font=("ArialBold",12)).place(x=400,y=490)
+    Label(root,text="Video Length: "+Duration[2],font=("ArialBold",12)).place(x=210,y=515)
+    argument3 = list((SearchData[1][2],Duration[2]))
+    Button(root,text="Play Audio",font=("ArialBlack",15),bd=5,command=lambda: PlayAudio(argument3)).place(x=620,y=480)
+    Button(root,text="Play Video",font=("ArialBlack",15),bd=5,command=lambda: PlayVideo(argument3)).place(x=780,y=480)
+    root.mainloop()
+
+Label(root,text="Search Keywords:",font=("ArialBlack",15)).place(x=50,y=90)
+e1 = Entry(root,font=("ArialBlack",20),width=50,bd=5,textvariable=SearchVar)
+e1.focus()
+SearchVar.set("Laung Lachi")
+e1.place(x=50,y=120)
+Button(root,text="Search",font=("ArialBlack",20),bd=5,command=Search).place(x=840,y=110)
+
+root.mainloop()
