@@ -3,8 +3,8 @@ from YouTube import *
 from bs4 import BeautifulSoup as soup
 import urllib.parse
 from PIL import Image, ImageTk
-import io
-import os
+import io,os
+from tkinter.messagebox import *
 
 root = Tk()
 root.geometry('1000x580')
@@ -23,14 +23,47 @@ os.system("cls")
 
 def Search():
     def PlayAudio(argument):
-        vidlink = argument[0]
-        duration = argument[1]
-        Audio(vidlink,duration)
-    
+        vidlink = argument
+            
+        audio_root = Toplevel()
+        b1 = Button(audio_root,text="Play",command=lambda: Audio(vidlink,b1,b2,b3))
+        b1.place(x=2,y=2)
+        
+        b2 = Button(audio_root,text="Pause/Play",command=PAUSE)
+        b2['state'] = DISABLED
+        b2.place(x=2,y=30)
+        
+        b3 = Button(audio_root,text="Stop",command=lambda: STOP(b1,b2,b3))
+        b3['state'] = DISABLED
+        b3.place(x=2,y=60)
+        def on_closing():
+            if askokcancel("Quit", "Do you want to quit?"):
+                STOP(b1,b2,b3)
+                audio_root.destroy()
+        audio_root.protocol("WM_DELETE_WINDOW", on_closing)
+        audio_root.mainloop()
+        
     def PlayVideo(argument):
-        vidlink = argument[0]
-        duration = argument[1]
-        Video(vidlink,duration)
+        vidlink = argument
+        
+        video_root = Toplevel()
+        b1 = Button(video_root,text="Play",command=lambda: Video(vidlink,b1,b2,b3))
+        b1.place(x=2,y=2)
+        
+        b2 = Button(video_root,text="Pause/Play",command=PAUSE)
+        b2['state'] = DISABLED
+        b2.place(x=2,y=30)
+        
+        b3 = Button(video_root,text="Stop",command=lambda: STOP(b1,b2,b3))
+        b3['state'] = DISABLED
+        b3.place(x=2,y=60)
+        
+        def on_closing():
+            if askokcancel("Quit", "Do you want to quit?"):
+                STOP(b1,b2,b3)
+                video_root.destroy()
+        video_root.protocol("WM_DELETE_WINDOW", on_closing)
+        video_root.mainloop()
     
     search=SearchVar.get()
     SearchData = list(SearchKeywords(search))
@@ -52,7 +85,7 @@ def Search():
     Label(root,text=Channel[0][0:25:]+" | ",font=("ArialBold",12)).place(x=210,y=250)
     Label(root,text=Views[0],font=("ArialBold",12)).place(x=400,y=250)
     Label(root,text="Video Length: "+Duration[0],font=("ArialBold",12)).place(x=210,y=275)
-    argument1 = list((SearchData[1][0],Duration[0]))
+    argument1 = SearchData[1][0]
     Button(root,text="Play Audio",font=("ArialBlack",15),bd=5,command=lambda: PlayAudio(argument1)).place(x=620,y=240)
     Button(root,text="Play Video",font=("ArialBlack",15),bd=5,command=lambda: PlayVideo(argument1)).place(x=780,y=240)
     
@@ -67,7 +100,7 @@ def Search():
     Label(root,text=Channel[1][0:25:]+" | ",font=("ArialBold",12)).place(x=210,y=370)
     Label(root,text=Views[1],font=("ArialBold",12)).place(x=400,y=370)
     Label(root,text="Video Length: "+Duration[1],font=("ArialBold",12)).place(x=210,y=395)
-    argument2 = list((SearchData[1][1],Duration[1]))
+    argument2 = SearchData[1][1]
     Button(root,text="Play Audio",font=("ArialBlack",15),bd=5,command=lambda: PlayAudio(argument2)).place(x=620,y=360)
     Button(root,text="Play Video",font=("ArialBlack",15),bd=5,command=lambda: PlayVideo(argument2)).place(x=780,y=360)
     
@@ -82,7 +115,7 @@ def Search():
     Label(root,text=Channel[2][0:25:]+" | ",font=("ArialBold",12)).place(x=210,y=490)
     Label(root,text=Views[2],font=("ArialBold",12)).place(x=400,y=490)
     Label(root,text="Video Length: "+Duration[2],font=("ArialBold",12)).place(x=210,y=515)
-    argument3 = list((SearchData[1][2],Duration[2]))
+    argument3 = SearchData[1][2]
     Button(root,text="Play Audio",font=("ArialBlack",15),bd=5,command=lambda: PlayAudio(argument3)).place(x=620,y=480)
     Button(root,text="Play Video",font=("ArialBlack",15),bd=5,command=lambda: PlayVideo(argument3)).place(x=780,y=480)
     root.mainloop()
